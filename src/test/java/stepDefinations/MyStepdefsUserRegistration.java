@@ -4,12 +4,17 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,7 +28,7 @@ public class MyStepdefsUserRegistration {
         }else {
             driver = new ChromeDriver();
         }*/
-        driver = new ChromeDriver();
+        driver = new FirefoxDriver();
         driver.get("https://membership.basketballengland.co.uk/NewSupporterAccount");
     }
 
@@ -104,6 +109,26 @@ public class MyStepdefsUserRegistration {
         WebElement succesfulRegistration = driver.findElement(By.cssSelector("h2.bold"));
         String actual = succesfulRegistration.getText();
         assertEquals(expected,actual);
-        driver.quit();
+    }
+
+    @When("I fill in all fields except the last name")
+    public void iFillInAllFieldsExceptTheLastName() {
+        WebElement missLastName = driver.findElement(By.id("member_lastname"));
+        missLastName.sendKeys("");
+
+    }
+
+    @Then("I should see an error message saying {string}")
+    public void iShouldSeeAnErrorMessageSaying(String expected) throws InterruptedException {
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("span[for='member_lastname']"))
+        );
+
+        String actual = errorMessage.getText();
+        System.out.println("Text found: " + actual);
+        assertEquals(expected, actual);
+
     }
 }

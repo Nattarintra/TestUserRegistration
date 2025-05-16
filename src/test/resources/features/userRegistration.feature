@@ -18,3 +18,11 @@ Feature: User Registration
     And I submit the form
     Then I should see a confirmation message "THANK YOU FOR CREATING AN ACCOUNT WITH BASKETBALL ENGLAND"
 
+  #Missing Last Name
+  Scenario: Missing required last name
+    #Given I am using "chrome" browser
+    Given I am using "firefox" browser
+    Given I am on the registration page
+    When I fill in all fields except the last name
+    And I submit the form
+    Then I should see an error message saying "Last Name is required"
