@@ -23,6 +23,31 @@ Feature: User Registration
     #Given I am using "chrome" browser
     Given I am using "firefox" browser
     Given I am on the registration page
-    When I fill in all fields except the last name
+    When I enter a valid date of birth
+    And I enter "Max" as the first name
+    And I enter "maxlund123@example.com" as the email
+    And I confirm the email with "maxlund123@example.com"
+    And I enter "Password555" as the password
+    And I confirm the password with "Password555"
+    And I select my basketball role
+    And I accept the Code of Ethics and Terms
     And I submit the form
-    Then I should see an error message saying "Last Name is required"
+    Then I should see an error message for "member_lastname" saying "Last Name is required"
+
+    #Terms Not Accepted
+  Scenario: Terms and conditions not accepted
+    #Given I am using "chrome" browser
+    Given I am using "firefox" browser
+    Given I am on the registration page
+    When I enter a valid date of birth
+    And I enter "Max" as the first name
+    And I enter "Lund" as the last name
+    And I enter "maxlund123@example.com" as the email
+    And I confirm the email with "maxlund123@example.com"
+    And I enter "Password555" as the password
+    And I confirm the password with "Password555"
+    And I select my basketball role
+    And I accept the age over Eighteen
+    And I accept the Code of Ethics
+    And I submit the form
+    Then I should see an error message for "TermsAccept" saying "You must confirm that you have read and accepted our Terms and Conditions"

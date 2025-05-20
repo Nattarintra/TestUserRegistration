@@ -118,17 +118,35 @@ public class MyStepdefsUserRegistration {
 
     }
 
-    @Then("I should see an error message saying {string}")
-    public void iShouldSeeAnErrorMessageSaying(String expected) throws InterruptedException {
-
+    @Then("I should see an error message for {string} saying {string}")
+    public void iShouldSeeAnErrorMessageForSaying(String field, String expected) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("span[for='member_lastname']"))
-        );
+                By.cssSelector("span[for='" + field + "']")
+        ));
 
         String actual = errorMessage.getText();
-        System.out.println("Text found: " + actual);
+        //System.out.println("Error message for '" + field + "': " + actual);
         assertEquals(expected, actual);
+    }
+
+    @And("I do not accept the terms and conditions")
+    public void iDoNotAcceptTheTermsAndConditions() {
+         driver.findElement(By.cssSelector("label[for='sign_up_25'] span.box"));
 
     }
+
+
+    @And("I accept the Code of Ethics")
+    public void iAcceptTheCodeOfEthics() {
+       driver.findElement(By.cssSelector("label[for='fanmembersignup_agreetocodeofethicsandconduct'] span.box")).click();
+    }
+
+
+    @And("I accept the age over Eighteen")
+    public void iAcceptTheAgeOverEighteen() {
+        driver.findElement(By.cssSelector("label[for='sign_up_26'] span.box")).click();
+    }
+
+
 }
