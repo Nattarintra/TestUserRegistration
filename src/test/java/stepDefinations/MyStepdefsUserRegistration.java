@@ -1,5 +1,6 @@
 package stepDefinations;
 
+import common.ExplicitWait;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -23,78 +24,68 @@ public class MyStepdefsUserRegistration {
 
     @Given("I am using {string} browser")
     public void iAmUsingBrowser(String browser) {
-         /* if (browser.equals("firefox")){
+          if (browser.equals("firefox")){
             driver = new FirefoxDriver();
         }else {
             driver = new ChromeDriver();
-        }*/
-        driver = new FirefoxDriver();
+        }
         driver.get("https://membership.basketballengland.co.uk/NewSupporterAccount");
     }
 
     @Given("I am on the registration page")
     public void iAmOnTheRegistrationPage() {
-        WebElement pageTitle = driver.findElement(By.id("titleText1"));
-        pageTitle.getText();
+
+        driver.findElement(By.id("titleText1")).getText();
     }
 
-    @When("I enter a valid date of birth")
-    public void iEnterAValidDateOfBirth() {
+    @When("I enter {string} as the date of birth")
+    public void iEnterDateOfBirth(String dob) {
         WebElement dateOfBD = driver.findElement(By.name("DateOfBirth"));
-        dateOfBD.sendKeys("01/01/2001");
+        dateOfBD.clear();
+        dateOfBD.sendKeys(dob);
         dateOfBD.sendKeys(Keys.ENTER);
     }
 
     @And("I enter {string} as the first name")
     public void iEnterAsTheFirstName(String firstName) {
-        WebElement userName = driver.findElement(By.id("member_firstname"));
-        userName.sendKeys(firstName);
+         driver.findElement(By.id("member_firstname")).sendKeys(firstName);
+
     }
 
     @And("I enter {string} as the last name")
     public void iEnterAsTheLastName(String lastName) {
-        WebElement userLastName = driver.findElement(By.id("member_lastname"));
-        userLastName.sendKeys(lastName);
+        driver.findElement(By.id("member_lastname")).sendKeys(lastName);
+
     }
 
     @And("I enter {string} as the email")
     public void iEnterAsTheEmail(String email) {
-        WebElement userEmail = driver.findElement(By.id("member_emailaddress"));
-        userEmail.sendKeys(email);
+         driver.findElement(By.id("member_emailaddress")).sendKeys(email);
+
     }
 
     @And("I confirm the email with {string}")
     public void iConfirmTheEmailWith(String confirmEmail) {
-        WebElement userConfirmEmail = driver.findElement(By.id("member_confirmemailaddress"));
-        userConfirmEmail.sendKeys(confirmEmail);
+        driver.findElement(By.id("member_confirmemailaddress")).sendKeys(confirmEmail);
+
     }
 
     @And("I enter {string} as the password")
     public void iEnterAsThePassword(String password) {
-        WebElement userPassWord = driver.findElement(By.id("signupunlicenced_password"));
-        userPassWord.sendKeys(password);
+         driver.findElement(By.id("signupunlicenced_password")).sendKeys(password);
+
     }
 
     @And("I confirm the password with {string}")
     public void iConfirmThePasswordWith(String confirmPassword) {
-        WebElement userConfirmPass = driver.findElement(By.id("signupunlicenced_confirmpassword"));
-        userConfirmPass.sendKeys(confirmPassword);
+         driver.findElement(By.id("signupunlicenced_confirmpassword")).sendKeys(confirmPassword);
+
     }
 
     @And("I select my basketball role")
     public void iSelectMyBasketballRole() {
-        WebElement checkRole = driver.findElement(By.cssSelector("label[for='signup_basketballrole_18'] span.box"));
-        checkRole.click();
-    }
+        driver.findElement(By.cssSelector("label[for='signup_basketballrole_18'] span.box")).click();
 
-    @And("I accept the Code of Ethics and Terms")
-    public void iAcceptTheCodeOfEthicsAndTerms() {
-        WebElement checkTerms = driver.findElement(By.cssSelector("label[for='sign_up_25'] span.box"));
-        checkTerms.click();
-        WebElement checkAge = driver.findElement(By.cssSelector("label[for='sign_up_26'] span.box"));
-        checkAge.click();
-        WebElement checkCodeOfEthics = driver.findElement(By.cssSelector("label[for='fanmembersignup_agreetocodeofethicsandconduct'] span.box"));
-        checkCodeOfEthics.click();
     }
 
     @And("I submit the form")
@@ -111,42 +102,40 @@ public class MyStepdefsUserRegistration {
         assertEquals(expected,actual);
     }
 
-    @When("I fill in all fields except the last name")
-    public void iFillInAllFieldsExceptTheLastName() {
-        WebElement missLastName = driver.findElement(By.id("member_lastname"));
-        missLastName.sendKeys("");
-
+    @And("I {string} the terms and conditions")
+    public void iTheTermsAndConditions(String acceptTerms) {
+        if (acceptTerms.equalsIgnoreCase("accept")){
+            driver.findElement(By.cssSelector("label[for='sign_up_25'] span.box")).click();
+        }
     }
-
-    @Then("I should see an error message for {string} saying {string}")
-    public void iShouldSeeAnErrorMessageForSaying(String field, String expected) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("span[for='" + field + "']")
-        ));
-
-        String actual = errorMessage.getText();
-        //System.out.println("Error message for '" + field + "': " + actual);
-        assertEquals(expected, actual);
-    }
-
-    @And("I do not accept the terms and conditions")
-    public void iDoNotAcceptTheTermsAndConditions() {
-         driver.findElement(By.cssSelector("label[for='sign_up_25'] span.box"));
-
-    }
-
-
-    @And("I accept the Code of Ethics")
-    public void iAcceptTheCodeOfEthics() {
-       driver.findElement(By.cssSelector("label[for='fanmembersignup_agreetocodeofethicsandconduct'] span.box")).click();
-    }
-
 
     @And("I accept the age over Eighteen")
     public void iAcceptTheAgeOverEighteen() {
         driver.findElement(By.cssSelector("label[for='sign_up_26'] span.box")).click();
     }
+    @And("I accept the Code of Ethics")
+    public void iAcceptTheCodeOfEthics() {
+        driver.findElement(By.cssSelector("label[for='fanmembersignup_agreetocodeofethicsandconduct'] span.box")).click();
+    }
 
+    @Then("I should see an error message for {string} saying {string}")
+    public void iShouldSeeAnErrorMessageForSaying(String field, String expected) {
+        WebElement message;
 
+        if (field.equals("ConfirmationMessage")) {
+            message = waitUntilFieldVisible(By.cssSelector("h2.bold"));
+        } else {
+            message = ExplicitWait.waitForVisible(driver, By.cssSelector(".field-validation-error span[for='" + field + "']")
+            );
+        }
+
+        String actual = message.getText();
+        assertEquals(expected.trim(), actual.trim());
+
+         driver.close();
+    }
+    private WebElement waitUntilFieldVisible(By locator) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
 }
